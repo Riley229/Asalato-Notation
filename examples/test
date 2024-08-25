@@ -1,0 +1,51 @@
+\meta {
+	\papersize letter
+	\title "Asalato Notation Examples"
+	\subtitle "with Western musical notation"
+	\composer "compiled by Sebastian Zhang"
+}
+
+\score {
+	\header "Flip-Flop -> Triplet Den-Den"
+	\layout {
+		\staff "Player #1" {
+			\displayName false
+		}
+		#\staff "Player #1" {
+		# 	\displayName false
+		# 	\westernNotation true
+		#}
+	}
+
+	\segment {
+		\time 4/4
+		\dotValue 8
+		\voice "Player #1" {
+			\right {
+				FI..FO....
+				FI..FO....
+			}
+
+			\left {
+				....FI..FO
+				....FI..FO
+			}
+		}
+	}	
+
+	\segment {
+		\dotValue 6
+		\voice "Player #1" {
+			\right {
+				FI.FO.FI.
+				FO.FI.FO.
+			}
+
+      # the 2nd left segment
+			\left {
+				.FI.FO.FI
+				.FO.FI.FO
+			}
+		}	
+	}
+}

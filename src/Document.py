@@ -6,41 +6,48 @@ class PaperSize(Enum):
 
 
 class Metadata:
-  paper_size = PaperSize.Letter
-  title = ''
-  subtitle = ''
-  composer = ''
+  def __init__(self):
+    self.paper_size = PaperSize.Letter
+    self.title = ''
+    self.subtitle = ''
+    self.composer = ''
 
 
 class Staff:
-  name = ''
-  display_name = True
-  western_notation = False
+  def __init__(self):
+    self.name = ''
+    self.display_name = True
+    self.western_notation = False
   
   
 class Voice:
-  name = ''
-  left_pattern = []
-  right_pattern = []
+  def __init__(self):
+    self.name = ''
+    self.left_pattern = []
+    self.right_pattern = []
     
     
 class TimeSignature:
-  top_value = 4
-  bottom_value = 4
+  def __init__(self):
+    self.top_value = 4
+    self.bottom_value = 4
   
   
 class ScoreSegment:
-  time_signature = TimeSignature()
-  dot_value = 4
-  voices = []
+  def __init__(self):
+    self.time_signature = None
+    self.dot_value = 4
+    self.voices = []
   
 
 class Score:
-  header = ''
-  layout = []
-  segments = []
+  def __init__(self):
+    self.header = ''
+    self.layout = []
+    self.segments = []
 
 
 class Document:
-  metadata = Metadata()
-  scores = []
+  def __init__(self):
+    self.metadata = Metadata()
+    self.scores = []

@@ -114,6 +114,7 @@ def parse_file(filename):
         parse_meta(child, document)
       elif child.data.value == 'score':
         parse_score(child, document)
+    return document
     
 def parse_meta(meta_tree, document):
   for child in meta_tree.children:
@@ -145,7 +146,7 @@ def parse_score_layout(layout_tree, score):
     staff = Staff()
     for child in staff_tree.children:
       if type(child) == Token:
-        staff.name = child.value
+        staff.name = parse_escaped_string(child.value)
       else:
         for option in child.children:
           if option.data.value == 'staff_display_name':
@@ -171,7 +172,7 @@ def parse_score_segment_voice(voice_tree, segment):
   voice = Voice()
   for child in voice_tree.children:
     if type(child) == Token:
-      voice.name = child.value
+      voice.name = parse_escaped_string(child.value)
     else:
       for option in child.children:
         if option.data.value == 'right_voice_component':
@@ -194,6 +195,7 @@ def parse_time_signature(str):
   components = str.split('/')
   time.top_value = int(components[0])
   time.bottom_value = int(components[1])
+  return time
   
 def parse_boolean(str):
   if str == 'true':
@@ -203,5 +205,3 @@ def parse_boolean(str):
   
 def parse_escaped_string(str):
   return str[1:-1]
-
-parse_file('../examples/test')
