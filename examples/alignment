@@ -1,0 +1,29 @@
+\meta {
+	\papersize letter
+	\title "Asalato Notation Examples"
+	\subtitle "with Western musical notation"
+	\composer "compiled by Sebastian Zhang"
+}
+
+\score {
+	\header "Flip-Flop -> Triplet Den-Den"
+	\layout {
+		\staff "Player #1" {
+			\displayName false
+		}
+	}
+
+	\segment {
+		\time 4/4
+		\dotValue 8
+		\voice "Player #1" {
+			\right {
+				FI FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x
+			}
+
+			\left {
+				FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x FI
+			}
+		}
+	}	
+}

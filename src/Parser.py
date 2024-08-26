@@ -9,8 +9,8 @@ notation_parser = Lark(r"""
     metadata : "\\meta" "{" meta_value* "}"
     meta_value : paper_size 
                | title 
-               | subtitle \
-              | composer
+               | subtitle
+               | composer
               
     paper_size : "\\papersize" PAPERSIZE
     title : "\\title" ESCAPED_STRING
@@ -71,23 +71,23 @@ notation_parser = Lark(r"""
     // Asalato Notations
     flip : "FI"
     flop : "FO"
-    flip_grab : "FI\+"
-    flop_grab : "FO\+"
+    flip_grab : "FI+"
+    flop_grab : "FO+"
     click_flip : "CI"
     click_flop : "CO"
-    click_flip_grab : "FI\+"
-    click_flop_grab : "FO\+"
+    click_flip_grab : "CI+"
+    click_flop_grab : "CO+"
     den_down : "DD"
     den_up : "DU"
-    den_down_grab : "DD\+"
-    den_up_grab : "DU\+"
+    den_down_grab : "DD+"
+    den_up_grab : "DU+"
     airturn : "AT"
     airturn_fake : "AF"
-    flip_throw : "FI\*\(" FLOAT "\)"
-    flop_throw : "FO\*\(" FLOAT "\)"
-    airturn_throw : "AT\*\(" FLOAT "\)"
+    flip_throw : "FI*(" FLOAT ")"
+    flop_throw : "FO*(" FLOAT ")"
+    airturn_throw : "AT*(" FLOAT ")"
     rest : "."
-    shake : "\|"
+    shake : "|"
     catch : "x"
     
     // Terminals
@@ -157,6 +157,11 @@ def parse_score_layout(layout_tree, score):
   
 def parse_score_segment(segment_tree, score):
   segment = ScoreSegment()
+  # default to same time/dotValue as previous segment
+  if len(score.segments) > 0:
+    previous_segment = score.segments[len(score.segments)-1]
+    segment.time_signature = previous_segment.time_signature
+    segment.dot_value = previous_segment.dot_value
   for child in segment_tree.children:
     for option in child.children:
       if option.data.value == 'segment_time':

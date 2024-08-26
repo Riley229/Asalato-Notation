@@ -2,7 +2,7 @@
 	\papersize letter
 	\title "Asalato Notation Examples"
 	\subtitle "with Western musical notation"
-	\composer "compiled by Sebastian Zhang"
+	\composer "J.S. Bach"
 }
 
 \score {
@@ -11,10 +11,10 @@
 		\staff "Player #1" {
 			\displayName false
 		}
-		#\staff "Player #1" {
+		# \staff "Player #1" {
 		# 	\displayName false
 		# 	\westernNotation true
-		#}
+		# }
 	}
 
 	\segment {

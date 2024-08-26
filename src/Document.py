@@ -31,13 +31,18 @@ class TimeSignature:
   def __init__(self):
     self.top_value = 4
     self.bottom_value = 4
-  
+    
+  def beats_per_measure(self):
+    return self.top_value * (4 / self.bottom_value)
   
 class ScoreSegment:
   def __init__(self):
-    self.time_signature = None
+    self.time_signature = TimeSignature()
     self.dot_value = 4
     self.voices = []
+    
+  def notes_per_measure(self):
+    return self.time_signature.beats_per_measure() * (self.dot_value / 4)
   
 
 class Score:
