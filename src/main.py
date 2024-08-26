@@ -1,9 +1,10 @@
 from argparse import ArgumentParser
 from neoscore.common import *
 from neoscore.core import paper
-from Parser import parse_file
-from Document import PaperSize
-from util import get_img_path, get_img_x_offset, note_scale, default_note_width
+from neoscore.western.invisible_clef import InvisibleClef
+from notation_parser import parse_file
+from document import PaperSize
+from util import get_img_path, get_img_x_offset, get_img_y_offset, note_scale, default_note_width, default_note_height
 
 def main(args):
   # parse file into document data object
@@ -36,12 +37,12 @@ def create_title_block(title, subtitle, composer):
   return composer_text.canvas_pos().y
   
 def create_score(header, layout, segments, starting_y_pos):
-  length = neoscore.document.paper.live_width - Unit(30)
+  length = (neoscore.document.paper.live_width - Unit(30)) * 3
   header_text = Text(Point(ZERO, starting_y_pos + Unit(25)), None, header, font=Font('Arial', Unit(10), weight=80))
-  flowable = Flowable((ZERO, Unit(25)), header_text, length * 3, Unit(110), break_threshold=Unit(300))
+  flowable = Flowable((ZERO, Unit(25)), header_text, length, Unit(110), break_threshold=Unit(300))
   staff_group = StaffGroup()
   
-  staff_y_offset = Unit(0)
+  staff_y_offset = Unit(25)
   for staff in layout:
     if staff.western_notation:
       staff_y_offset = create_western_staff(staff.name, staff.display_name, segments, staff_y_offset, flowable, staff_group)
@@ -52,25 +53,41 @@ def create_score(header, layout, segments, starting_y_pos):
   return flowable.canvas_pos().y + flowable.height + Unit(50)
 
 def create_staff(name, display_name, segments, y_offset, flowable, staff_group):
-  length = neoscore.document.paper.live_width - Unit(30)
+  length = (neoscore.document.paper.live_width - Unit(30)) * 3
   
-  # create basic staff objects
-  right_staff_object = Staff((ZERO, y_offset), flowable, length * 3, staff_group, line_count=0)
+  # create staff objects
+  Staff((ZERO, y_offset), flowable, length * 3, staff_group, line_count=0) # additional staff is used to "lead" barlines
+  right_staff_object = Staff((ZERO, y_offset + Unit(default_note_width * note_scale * 0.5)), flowable, length, staff_group, line_count=0)
   InstrumentName((right_staff_object.unit(-2), right_staff_object.center_y), right_staff_object, 'R', 'R', font=Font('Arial', Unit(10), weight=50))
-  left_staff_object = Staff((ZERO, y_offset + Unit(50)), flowable, length * 3, staff_group, line_count=0)
+  left_staff_object = Staff((ZERO, y_offset + Unit(default_note_height * note_scale * 1.5)), flowable, length, staff_group, line_count=0)
   InstrumentName((left_staff_object.unit(-2), left_staff_object.center_y), left_staff_object, 'L', 'L', font=Font('Arial', Unit(10), weight=50))
-  Staff((ZERO, y_offset + Unit(100)), flowable, length * 3, staff_group, line_count=0) # additional staff is used to "ground" barlines
-  Barline(ZERO, staff_group)
+  Staff((ZERO, y_offset + Unit(default_note_height * note_scale * 2)), flowable, length, staff_group, line_count=0) # additional staff is used to "ground" barlines
 
   # populate with notes, time signatures, notations, etc.
   right_x_offset = Unit(10)
   left_x_offset = Unit(10)
+  prev_time_signature = None
+  prev_dot_value = None
+  
   for segment in segments:
     notes_per_measure = segment.notes_per_measure()
     
     # display time signature and dot value
-    # TODO: implement
+    if segment.dot_value != prev_dot_value:
+      MetronomeMark((right_x_offset, Unit(-default_note_height * note_scale * 0.5) - Unit(13)), right_staff_object, 'noteheadBlack', '')
+      Text((right_x_offset + Unit(12), Unit(-default_note_height * note_scale * 0.5) - Unit(10)), right_staff_object, '=')
+      MetronomeMark((right_x_offset + Unit(22), Unit(-default_note_height * note_scale * 0.5) - Unit(10)), right_staff_object, 'metNoteQuarterUp', '')
+    if (prev_time_signature == None) or (segment.time_signature.top_value != prev_time_signature.top_value) or (segment.time_signature.bottom_value != prev_time_signature.bottom_value):
+      x_pos = right_x_offset
+      if segment.dot_value != prev_dot_value:
+        x_pos += Unit(50)
+      meter = Meter.numeric(segment.time_signature.top_value, segment.time_signature.bottom_value)
+      MusicText((x_pos, Unit(-default_note_height * note_scale * 0.5) - Unit(22)), right_staff_object, meter.upper_text_glyph_names[0])
+      MusicText((x_pos, Unit(-default_note_height * note_scale * 0.5) - Unit(10)), right_staff_object, meter.lower_text_glyph_names[0])
       
+    prev_dot_value = segment.dot_value
+    prev_time_signature = segment.time_signature
+    
     for voice in segment.voices:
       right_note = 0
       right_measure = 0
@@ -85,27 +102,29 @@ def create_staff(name, display_name, segments, y_offset, flowable, staff_group):
       for note in voice.right_pattern:
         img_path = get_img_path(note, True)
         img_x_offset = get_img_x_offset(note, True)
-        Image((right_x_offset + img_x_offset, ZERO), right_staff_object, img_path, scale=note_scale)
+        img_y_offset = get_img_y_offset(note, True)
+        Image((right_x_offset + img_x_offset, img_y_offset - Unit(default_note_height * note_scale * 0.5)), right_staff_object, img_path, scale=note_scale)
         right_x_offset += Unit(default_note_width * note_scale)
         right_note += 1
         if right_note == notes_per_measure:
           # render barline (will go across both staves)
-          Barline(right_x_offset, staff_group)
+          Barline(right_x_offset + Unit(9), staff_group)
           right_note = 0
           right_measure += 1
-          right_x_offset += Unit(10)
+          right_x_offset += Unit(20)
       
       # populate left staff
       for note in voice.left_pattern:
         img_path = get_img_path(note, False)
         img_x_offset = get_img_x_offset(note, False)
-        Image((left_x_offset + img_x_offset, ZERO), left_staff_object, img_path, scale=note_scale)
+        img_y_offset = get_img_y_offset(note, False)
+        Image((left_x_offset + img_x_offset, img_y_offset - Unit(default_note_height * note_scale * 0.5)), left_staff_object, img_path, scale=note_scale)
         left_x_offset += Unit(default_note_width * note_scale)
         left_note += 1
         if left_note == notes_per_measure:
           left_note = 0
           left_measure += 1
-          left_x_offset += Unit(10)
+          left_x_offset += Unit(20)
           
       if (left_measure != right_measure) or (left_note != right_note):
         # TODO: better error handling
@@ -116,7 +135,7 @@ def create_staff(name, display_name, segments, y_offset, flowable, staff_group):
         print('ERROR: missing beats at end of final measure. Must be a full measure')
         return
   
-  return y_offset + Unit(110)
+  return y_offset + Unit(default_note_height * 2) + Unit(20)
 
 def create_western_staff(name, display_name, segments, y_offset, flowable, group):
   length = neoscore.document.paper.live_width - Unit(30)
@@ -124,7 +143,7 @@ def create_western_staff(name, display_name, segments, y_offset, flowable, group
   
   # create basic staff object
   staff_object = Staff((ZERO, y_offset), flowable, length * 3, group, line_count=1)
-  Clef(ZERO, staff_object, "percussion_1")
+  Clef(ZERO, staff_object, 'percussion_1')
   if display_name:
     InstrumentName((staff_object.unit(-2), staff_object.center_y), staff_object, name, '', font=Font('Arial', Unit(10)))
     

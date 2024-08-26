@@ -1,6 +1,6 @@
 from lark import Lark
 from lark.lexer import Token
-from Document import Document, Score, Staff, ScoreSegment, Voice, TimeSignature, PaperSize
+from document import Document, Score, Staff, ScoreSegment, Voice, TimeSignature, PaperSize
 
 notation_parser = Lark(r"""
     // Rules

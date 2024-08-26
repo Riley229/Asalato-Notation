@@ -5,12 +5,15 @@
 	\composer "J.S. Bach"
 }
 
+# currently only supports one score per document
 \score {
 	\header "Flip-Flop -> Triplet Den-Den"
 	\layout {
+		# currently only supports one staff per score
 		\staff "Player #1" {
 			\displayName false
 		}
+		# western notation not yet supported
 		# \staff "Player #1" {
 		# 	\displayName false
 		# 	\westernNotation true
