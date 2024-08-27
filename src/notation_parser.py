@@ -1,6 +1,5 @@
 from lark import Lark
-from lark.lexer import Token
-from document import Document, Score, Staff, ScoreSegment, Voice, TimeSignature, PaperSize
+from document import Document, TimeSignature, PaperSize
 
 notation_parser = Lark(r"""
     // Rules
@@ -38,7 +37,7 @@ notation_parser = Lark(r"""
                   | segment_voice
                   
     segment_time : "\\time" TIME_SIGNATURE
-    segment_dot_value : "\\dotValue" INTEGER
+    segment_dot_value : "\\dotValue" TIME_SIGNATURE
     segment_voice : "\\voice" ESCAPED_STRING "{" voice_component* "}"
     
     voice_component : left_voice_component
@@ -108,105 +107,4 @@ notation_parser = Lark(r"""
 def parse_file(filename):
   with open(filename) as file:
     notation_tree = notation_parser.parse(file.read())
-    document = Document()
-    for child in notation_tree.children:
-      if child.data.value == 'metadata':
-        parse_meta(child, document)
-      elif child.data.value == 'score':
-        parse_score(child, document)
-    return document
-    
-def parse_meta(meta_tree, document):
-  for child in meta_tree.children:
-    for option in child.children:
-      if option.data.value == 'paper_size':
-        document.metadata.papersize = parse_papersize(option.children[0].value)
-      elif option.data.value == 'title':
-        document.metadata.title = parse_escaped_string(option.children[0].value)
-      elif option.data.value == 'subtitle':
-        document.metadata.subtitle = parse_escaped_string(option.children[0].value)
-      elif option.data.value == 'composer':
-        document.metadata.composer = parse_escaped_string(option.children[0].value)
-
-def parse_score(score_tree, document):
-  score = Score()
-  for child in score_tree.children:
-    for option in child.children:
-      if option.data.value == 'score_header':
-        score.header = parse_escaped_string(option.children[0].value)
-      elif option.data.value == 'score_layout':
-        parse_score_layout(option, score)
-      elif option.data.value == 'score_segment':
-        parse_score_segment(option, score)
-        
-  document.scores.append(score)
-  
-def parse_score_layout(layout_tree, score):
-  for staff_tree in layout_tree.children:
-    staff = Staff()
-    for child in staff_tree.children:
-      if type(child) == Token:
-        staff.name = parse_escaped_string(child.value)
-      else:
-        for option in child.children:
-          if option.data.value == 'staff_display_name':
-            staff.display_name = parse_boolean(option.children[0].value)
-          elif option.data.value == 'staff_western_notation':
-            staff.western_notation = parse_boolean(option.children[0].value)
-    score.layout.append(staff)
-  
-def parse_score_segment(segment_tree, score):
-  segment = ScoreSegment()
-  # default to same time/dotValue as previous segment
-  if len(score.segments) > 0:
-    previous_segment = score.segments[len(score.segments)-1]
-    segment.time_signature = previous_segment.time_signature
-    segment.dot_value = previous_segment.dot_value
-  for child in segment_tree.children:
-    for option in child.children:
-      if option.data.value == 'segment_time':
-        segment.time_signature = parse_time_signature(option.children[0].value)
-      elif option.data.value == 'segment_dot_value':
-        segment.dot_value = int(option.children[0].value)
-      elif option.data.value == 'segment_voice':
-        parse_score_segment_voice(option, segment)
-        
-  score.segments.append(segment)
-        
-def parse_score_segment_voice(voice_tree, segment):
-  voice = Voice()
-  for child in voice_tree.children:
-    if type(child) == Token:
-      voice.name = parse_escaped_string(child.value)
-    else:
-      for option in child.children:
-        if option.data.value == 'right_voice_component':
-          for notation in option.children:
-            voice.right_pattern.append(notation.children[0].data.value)
-        elif option.data.value == 'left_voice_component':
-          for notation in option.children:
-            voice.left_pattern.append(notation.children[0].data.value)
-    
-  segment.voices.append(voice)
-  
-def parse_papersize(str):
-  if str == 'letter':
-    return PaperSize.Letter
-  else:
-    return PaperSize.A4
-
-def parse_time_signature(str):
-  time = TimeSignature()
-  components = str.split('/')
-  time.top_value = int(components[0])
-  time.bottom_value = int(components[1])
-  return time
-  
-def parse_boolean(str):
-  if str == 'true':
-    return True
-  else:
-    return False
-  
-def parse_escaped_string(str):
-  return str[1:-1]
+    return Document.from_tree(notation_tree)

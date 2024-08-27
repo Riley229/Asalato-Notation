@@ -22,7 +22,7 @@
 
 	\segment {
 		\time 4/4
-		\dotValue 8
+		\dotValue 1/8
 		\voice "Player #1" {
 			\right {
 				FI..FO....
@@ -37,7 +37,7 @@
 	}	
 
 	\segment {
-		\dotValue 6
+		# \dotValue 6
 		\voice "Player #1" {
 			\right {
 				FI.FO.FI.
