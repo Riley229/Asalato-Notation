@@ -1,5 +1,5 @@
 from lark import Lark
-from document import Document, TimeSignature, PaperSize
+from components.document import Document
 
 notation_parser = Lark(r"""
     // Rules
@@ -19,11 +19,10 @@ notation_parser = Lark(r"""
     score : "\\score" "{" score_value* "}"
     score_value : score_header 
                 | score_layout 
-                | score_segment
+                | score_voice
                 
     score_header : "\\header" ESCAPED_STRING
     score_layout : "\\layout" "{" staff* "}"
-    score_segment : "\\segment" "{" segment_value* "}"
 
     staff : "\\staff" ESCAPED_STRING "{" staff_value* "}"
     staff_value : staff_display_name
@@ -32,41 +31,47 @@ notation_parser = Lark(r"""
     staff_display_name : "\\displayName" BOOLEAN
     staff_western_notation : "\\westernNotation" BOOLEAN
     
-    segment_value : segment_time
-                  | segment_dot_value
-                  | segment_voice
+    score_voice : "\\voice" ESCAPED_STRING "{" voice_hand* "}"
+    voice_hand : left_hand
+               | right_hand
+               
+    left_hand : "\\left" "{" score_component* "}"
+    right_hand : "\\right" "{" score_component* "}"
+    
+    score_component : time_signature
+                    | note_duration
+                    | tuplet
+                    | note_notation
                   
-    segment_time : "\\time" TIME_SIGNATURE
-    segment_dot_value : "\\dotValue" TIME_SIGNATURE
-    segment_voice : "\\voice" ESCAPED_STRING "{" voice_component* "}"
+    time_signature : "\\time" TIME_SIGNATURE
+    note_duration : "\\dotValue" TIME_SIGNATURE
+    tuplet : "\\tuplet" "{" tuplet_component* "}"
+    tuplet_component : tuplet_duration
+                     | note_notation
+                     
+    tuplet_duration: "\\duration" INTEGER
     
-    voice_component : left_voice_component
-                    | right_voice_component
-                    
-    left_voice_component : "\\left" "{" notation* "}"
-    right_voice_component : "\\right" "{" notation* "}"
-    
-    notation : flip
-             | flop
-             | flip_grab
-             | flop_grab
-             | click_flip
-             | click_flop
-             | click_flip_grab
-             | click_flop_grab
-             | den_down
-             | den_up
-             | den_down_grab
-             | den_up_grab
-             | airturn
-             | airturn_fake
-             | flip_throw
-             | flop_throw
-             | airturn_throw
-             | rest
-             | shake
-             | catch
-    
+    note_notation : flip
+                  | flop
+                  | flip_grab
+                  | flop_grab
+                  | click_flip
+                  | click_flop
+                  | click_flip_grab
+                  | click_flop_grab
+                  | den_down
+                  | den_up
+                  | den_down_grab
+                  | den_up_grab
+                  | airturn
+                  | airturn_fake
+                  | flip_throw
+                  | flop_throw
+                  | airturn_throw
+                  | rest
+                  | shake
+                  | catch
+          
     // Asalato Notations
     flip : "FI"
     flop : "FO"

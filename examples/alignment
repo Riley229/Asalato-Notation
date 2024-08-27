@@ -13,17 +13,15 @@
 		}
 	}
 
-	\segment {
-		\time 4/4
-		\dotValue 8
 		\voice "Player #1" {
 			\right {
-				FI FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x
+				\time 4/4
+		\dotValue 1/8
+				FI FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x FI FI FI FI
 			}
 
 			\left {
-				FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x FI
+				FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x FI FI FI FI FI
 			}
 		}
-	}	
 }

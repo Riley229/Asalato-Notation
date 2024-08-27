@@ -13,42 +13,51 @@
 		\staff "Player #1" {
 			\displayName false
 		}
-		# western notation not yet supported
-		# \staff "Player #1" {
-		# 	\displayName false
-		# 	\westernNotation true
-		# }
 	}
 
-	\segment {
-		\time 4/4
-		\dotValue 1/8
-		\voice "Player #1" {
-			\right {
-				FI..FO....
-				FI..FO....
+	\voice "Player #1" {
+		\right {
+			\time 4/4
+			\dotValue 1/8
+			FI..FO....
+			FI..FO....
+			\tuplet {
+				\duration 4
+				FI.FO
 			}
-
-			\left {
-				....FI..FO
-				....FI..FO
+			\tuplet {
+				\duration 4
+				.FI.
+			}
+			\tuplet {
+				\duration 4
+				FO.FI
+			}
+			\tuplet {
+				\duration 4
+				.FO.
 			}
 		}
-	}	
 
-	\segment {
-		# \dotValue 6
-		\voice "Player #1" {
-			\right {
-				FI.FO.FI.
-				FO.FI.FO.
+		\left {
+			....FI..FO
+			....FI..FO
+			\tuplet {
+				\duration 4
+				.FI.
 			}
-
-      # the 2nd left segment
-			\left {
-				.FI.FO.FI
-				.FO.FI.FO
+			\tuplet {
+				\duration 4
+				FO.FI
 			}
-		}	
+			\tuplet {
+				\duration 4
+				.FO.
+			}
+			\tuplet {
+				\duration 4
+				FI.FO
+			}
+		}
 	}
 }
