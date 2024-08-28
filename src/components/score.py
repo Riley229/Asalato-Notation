@@ -1,28 +1,24 @@
 from lark.lexer import Token
 from neoscore.western.duration import Duration
 from neoscore.common import *
-from components.measure import Measure
+from components.measure import Measure, TimeSignature
 from components.note import Note, EmptyNote, Tuplet
-from components.util import note_height, note_width, parse_escaped_string, parse_duration, parse_boolean
-
-class TimeSignature:
-  def __init__(self, top_value=4, bottom_value=4):
-    self.top_value = top_value
-    self.bottom_value = bottom_value
-    
-  def beats_per_measure(self):
-    return self.top_value * (4 / self.bottom_value)
-  
-  def from_tree(tree):
-    components = tree.children[0].value.split('/')
-    return TimeSignature(int(components[0]), int(components[1]))
+from components.util import note_height, note_width, parse_escaped_string, parse_duration
 
 
 class ScoreDisplay:
-  def __init__(self, voices):
+  def __init__(self, voices, layout):    
+    if len(layout) == 0:
+      return
+    voice = None
+    for next_voice in voices:                     # temporary, only supports 1 voice
+      if next_voice.name == layout[0].name:
+        voice = next_voice
+        break
+      
     self.measures = []
-    
-    voice = voices[0] # temporary, only supports 1 voice
+    self.staff = layout[0]
+      
     time_pattern = [x for _, x in sorted(zip(voice.time_pattern_indices, voice.time_pattern))]
     time_pattern_indices = sorted(voice.time_pattern_indices)
     measure = Measure(TimeSignature(), Duration(1, 4), [], [])
@@ -56,6 +52,9 @@ class ScoreDisplay:
       raise Exception('Final measure is missing %s beats' % int(measure.expected_note_count() - measure_index))
       
   def draw(self, y_offset, parent):
+    if self.staff == None:
+      return y_offset
+    
     length = ZERO
     for measure in self.measures:
       length += measure.minimum_width()
@@ -71,6 +70,12 @@ class ScoreDisplay:
     InstrumentName((left_staff.unit(-2), left_staff.center_y), left_staff, 'L', 'L', font=Font('Arial', Unit(10), weight=50))
     Staff((ZERO, y_offset + note_height(2.0)), flowable, length, staff_group, line_count=0) # additional staff is used to "ground" barlines
     
+    # Optionally, create western staff object
+    western_staff = None
+    if self.staff.include_western_notation:
+      western_staff = Staff((ZERO, y_offset + note_height(2.0) + Unit(20)), flowable, length, staff_group, line_count=1)
+      Clef(ZERO, western_staff, 'percussion_1')
+    
     x_offset = ZERO
     time_signature = None
     note_duration = None
@@ -84,7 +89,7 @@ class ScoreDisplay:
         render_note_duration = True
         note_duration = measure.note_duration
         
-      measure.draw(x_offset, right_staff, left_staff, staff_group, render_note_duration, render_time_signature)
+      measure.draw(x_offset, right_staff, left_staff, western_staff, staff_group, render_note_duration, render_time_signature, self.staff.include_western_notation)
       x_offset += measure.minimum_width()
       
     SystemLine(staff_group)   # Automatically adds barlines to the beginning of each line
@@ -101,19 +106,20 @@ class Voice:
     
   def parse_hand_from_tree(tree, time_pattern, time_pattern_indices, hand_pattern, right_hand):
     for notation in tree.children:
-      if notation.children[0].data.value == 'time_signature':
-        time_pattern.append(TimeSignature.from_tree(notation.children[0]))
+      notation = notation.children[0]
+      if notation.data.value == 'time_signature':
+        time_pattern.append(TimeSignature.from_tree(notation))
         time_pattern_indices.append(len(hand_pattern))
-      elif notation.children[0].data.value == 'note_duration':
-        time_pattern.append(parse_duration(notation.children[0].children[0].value))
+      elif notation.data.value == 'note_duration':
+        time_pattern.append(parse_duration(notation.children[0].value))
         time_pattern_indices.append(len(hand_pattern))
-      elif notation.children[0].data.value == 'tuplet':
-        tuplet = Tuplet.from_tree(notation.children[0], right_hand)
+      elif notation.data.value == 'tuplet':
+        tuplet = Tuplet.from_tree(notation, right_hand)
         hand_pattern.append(tuplet)
         for i in range(0, tuplet.duration - 1):
           hand_pattern.append(EmptyNote())
-      elif notation.children[0].data.value == 'note_notation':
-        hand_pattern.append(Note.from_tree(notation.children[0].children[0], right_hand))
+      elif notation.data.value == 'note_notation':
+        hand_pattern.append(Note.from_tree(notation, right_hand))
     
   def from_tree(tree):
     voice = Voice()
@@ -131,22 +137,17 @@ class Voice:
   
   
 class ScoreStaff:
-  def __init__(self, name='', display_name=True, western_notation=False):
+  def __init__(self, name='', include_western_notation=False):
     self.name = name
-    self.display_name = display_name
-    self.western_notation = western_notation
+    self.include_western_notation = include_western_notation
     
   def from_tree(tree):
     staff = ScoreStaff()
     for child in tree.children:
       if type(child) == Token:
         staff.name = parse_escaped_string(child.value)
-      else:
-        for option in child.children:
-          if option.data.value == 'staff_display_name':
-            staff.display_name = parse_boolean(option.children[0].value)
-          elif option.data.value == 'staff_western_notation':
-            staff.western_notation == parse_boolean(option.children[0].value)
+      elif child.data.value == 'include_western_notation':
+        staff.include_western_notation = True
     
     return staff
 
@@ -170,9 +171,9 @@ class Score:
         elif option.data.value == 'score_voice':
           score.voices.append(Voice.from_tree(option))
           
-    score.display = ScoreDisplay(score.voices)
+    score.display = ScoreDisplay(score.voices, score.layout)
     return score
   
   def draw(self, y_pos):
     header_text = Text(Point(ZERO, y_pos + Unit(25)), None, self.header, font=Font('Arial', Unit(10), weight=80))
-    self.display.draw(Unit(25), header_text)
+    return self.display.draw(Unit(25), header_text)

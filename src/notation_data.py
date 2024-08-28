@@ -1,4 +1,4 @@
-notation_data = {
+note_data = {
   'flip': {
     'left': {
       'file_path': 'resources/flip-LH.svg',
@@ -102,7 +102,6 @@ notation_data = {
   'den_down': {
     'left': {
       'file_path': 'resources/den-down-LH.svg',
-      'x_offset': 0,
       'y_offset': 31,
     },
     'right': {
@@ -114,7 +113,6 @@ notation_data = {
   'den_up': {
     'left': {
       'file_path': 'resources/den-up-LH.svg',
-      'x_offset': 0,
       'y_offset': 21,
     },
     'right': {
@@ -126,7 +124,6 @@ notation_data = {
   'den_down_grab': {
     'left': {
       'file_path': 'resources/den-down-LH-G.svg',
-      'x_offset': 0,
       'y_offset': 31,
     },
     'right': {
@@ -138,7 +135,6 @@ notation_data = {
   'den_up_grab': {
     'left': {
       'file_path': 'resources/den-up-LH-G.svg',
-      'x_offset': 0,
       'y_offset': 17,
     },
     'right': {
@@ -172,75 +168,184 @@ notation_data = {
     },
   },
   'flip_throw': {
-    'left': {
+    'both': {
       'file_path': 'resources/flip-throw.svg',
       'x_offset': 9.5,
-      'y_offset': 0,
-    },
-    'right': {
-      'file_path': 'resources/flip-throw.svg',
-      'x_offset': 9.5,
-      'y_offset': 0,
     },
   },
   'flop_throw': {
-    'left': {
-      'file_path': 'resources/flop-throw.svg',
-      'x_offset': 14,
-      'y_offset': 31,
-    },
-    'right': {
+    'both': {
       'file_path': 'resources/flop-throw.svg',
       'x_offset': 14,
       'y_offset': 31,
     },
   },
   'airturn_throw': {
-    'left': {
-      'file_path': 'resources/airturn-throw.svg',
-      'x_offset': 4,
-      'y_offset': 2,
-    },
-    'right': {
+    'both': {
       'file_path': 'resources/airturn-throw.svg',
       'x_offset': 4,
       'y_offset': 2,
     },
   },
   'rest': {
-    'left': {
-      'file_path': 'resources/rest.svg',
-      'x_offset': 31.5,
-      'y_offset': 48.5,
-    },
-    'right': {
+    'both': {
       'file_path': 'resources/rest.svg',
       'x_offset': 31.5,
       'y_offset': 48.5,
     },
   },
   'shake': {
-    'left': {
-      'file_path': 'resources/shake.svg',
-      'x_offset': 34,
-      'y_offset': 45.5,
-    },
-    'right': {
+    'both': {
       'file_path': 'resources/shake.svg',
       'x_offset': 34,
       'y_offset': 45.5,
     },
   },
   'catch': {
-    'left': {
+    'both': {
       'file_path': 'resources/catch.svg',
       'x_offset': 24,
       'y_offset': 21,
     },
-    'right': {
-      'file_path': 'resources/catch.svg',
-      'x_offset': 24,
-      'y_offset': 21,
+  },
+}
+
+modifier_data = {
+  'knock': {
+    'both': {
+      'file_path': 'resources/knock.svg',
+      'x_offset': 27,
+      'y_offset': -8.5,
+    },
+  },
+  'accent': {
+    'both': {
+      'glyph': 'articAccentAbove',
+    },
+  },
+  'staccato': {
+    'both': {
+      'glyph': 'articStaccatoAbove',
+    },
+  },
+  'tenuto': {
+    'both': {
+      'glyph': 'articTenutoAbove',
+    },
+  },
+  'stacatissimo': {
+    'both': {
+      'glyph': 'articStaccatissimoAbove',
+    },
+  },
+  'marcato': {
+    'both': {
+      'glyph': 'articMarcatoAbove',
+    },
+  },
+  'marcato_staccato': {
+    'both': {
+      'glyph': 'articMarcatoStaccatoAbove',
+    },
+  },
+  'accent_staccato': {
+    'both': {
+      'glyph': 'articAccentStaccatoAbove',
+    },
+  },
+  'tenuto_staccato': {
+    'both': {
+      'glyph': 'articTenutoStaccatoAbove',
+    },
+  },
+  'tenuto_accent': {
+    'both': {
+      'glyph': 'articTenutoAccentAbove',
+    },
+  },
+  'stress': {
+    'both': {
+      'glyph': 'articStressAbove',
+    },
+  },
+  'unstress': {
+    'both': {
+      'glyph': 'articUnstressAbove',
+    },
+  },
+  'marcato_tenuto': {
+    'both': {
+      'glyph': 'articMarcatoTenutoAbove',
+    },
+  },
+  'dynamic_pppppp': {
+    'both': {
+      'glyph': 'dynamicPPPPPP',
+    },
+  },
+  'dynamic_ppppp': {
+    'both': {
+      'glyph': 'dynamicPPPPP',
+    },
+  },
+  'dynamic_pppp': {
+    'both': {
+      'glyph': 'dynamicPPPP',
+    },
+  },
+  'dynamic_ppp': {
+    'both': {
+      'glyph': 'dynamicPPP',
+    },
+  },
+  'dynamic_pp': {
+    'both': {
+      'glyph': 'dynamicPP',
+    },
+  },
+  'dynamic_p': {
+    'both': {
+      'glyph': 'dynamicPiano',
+    },
+  },
+  'dynamic_mp': {
+    'both': {
+      'glyph': 'dynamicMP',
+    },
+  },
+  'dynamic_mf': {
+    'both': {
+      'glyph': 'dynamicMF',
+    },
+  },
+  'dynamic_f': {
+    'both': {
+      'glyph': 'dynamicForte',
+    },
+  },
+  'dynamic_ff': {
+    'both': {
+      'glyph': 'dynamicFF',
+    },
+  },
+  'dynamic_fff': {
+    'both': {
+      'glyph': 'dynamicFFF',
+    },
+  },
+  'dynamic_ffff': {
+    'both': {
+      'glyph': 'dynamicFFFF',
+    },
+  },
+  'dynamic_fffff': {
+    'both': {
+      'glyph': 'dynamicFFFFF',
+    },
+  },
+  'dynamic_ffffff': {
+    'both': {
+      'glyph': 'dynamicFFFFFF',
     },
   },
 }

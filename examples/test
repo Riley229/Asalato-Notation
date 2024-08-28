@@ -11,7 +11,7 @@
 	\layout {
 		# currently only supports one staff per score
 		\staff "Player #1" {
-			\displayName false
+			#\includeWesternNotation
 		}
 	}
 
@@ -19,8 +19,8 @@
 		\right {
 			\time 4/4
 			\dotValue 1/8
-			FI..FO....
-			FI..FO....
+			FI\ff..FO\knock....
+			FI..FO\staccato....
 			\tuplet {
 				\duration 4
 				FI.FO
@@ -40,8 +40,8 @@
 		}
 
 		\left {
-			....FI..FO
-			....FI..FO
+			....FI\knock..FO
+			....FI\marcato..FO
 			\tuplet {
 				\duration 4
 				.FI.

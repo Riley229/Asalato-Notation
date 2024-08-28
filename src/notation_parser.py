@@ -24,12 +24,8 @@ notation_parser = Lark(r"""
     score_header : "\\header" ESCAPED_STRING
     score_layout : "\\layout" "{" staff* "}"
 
-    staff : "\\staff" ESCAPED_STRING "{" staff_value* "}"
-    staff_value : staff_display_name
-                | staff_western_notation
-                
-    staff_display_name : "\\displayName" BOOLEAN
-    staff_western_notation : "\\westernNotation" BOOLEAN
+    staff : "\\staff" ESCAPED_STRING "{" include_western_notation? "}"                
+    include_western_notation : "\\includeWesternNotation"
     
     score_voice : "\\voice" ESCAPED_STRING "{" voice_hand* "}"
     voice_hand : left_hand
@@ -51,27 +47,57 @@ notation_parser = Lark(r"""
                      
     tuplet_duration: "\\duration" INTEGER
     
-    note_notation : flip
-                  | flop
-                  | flip_grab
-                  | flop_grab
-                  | click_flip
-                  | click_flop
-                  | click_flip_grab
-                  | click_flop_grab
-                  | den_down
-                  | den_up
-                  | den_down_grab
-                  | den_up_grab
-                  | airturn
-                  | airturn_fake
-                  | flip_throw
-                  | flop_throw
-                  | airturn_throw
-                  | rest
-                  | shake
-                  | catch
-          
+    note_notation : note note_modifier*
+    
+    note : flip
+         | flop
+         | flip_grab
+         | flop_grab
+         | click_flip
+         | click_flop
+         | click_flip_grab
+         | click_flop_grab
+         | den_down
+         | den_up
+         | den_down_grab
+         | den_up_grab
+         | airturn
+         | airturn_fake
+         | flip_throw
+         | flop_throw
+         | airturn_throw
+         | rest
+         | shake
+         | catch
+         
+    note_modifier : knock
+                  | accent
+                  | staccato
+                  | tenuto
+                  | stacatissimo
+                  | marcato
+                  | marcato_staccato
+                  | accent_staccato
+                  | tenuto_staccato
+                  | tenuto_accent
+                  | stress
+                  | unstress
+                  | marcato_tenuto
+                  | dynamic_pppppp
+                  | dynamic_ppppp
+                  | dynamic_pppp
+                  | dynamic_ppp
+                  | dynamic_pp
+                  | dynamic_p
+                  | dynamic_mp
+                  | dynamic_mf
+                  | dynamic_f
+                  | dynamic_ff
+                  | dynamic_fff
+                  | dynamic_ffff
+                  | dynamic_fffff
+                  | dynamic_ffffff
+                  
     // Asalato Notations
     flip : "FI"
     flop : "FO"
@@ -87,15 +113,45 @@ notation_parser = Lark(r"""
     den_up_grab : "DU+"
     airturn : "AT"
     airturn_fake : "AF"
-    flip_throw : "FI*(" FLOAT ")"
-    flop_throw : "FO*(" FLOAT ")"
-    airturn_throw : "AT*(" FLOAT ")"
+    flip_throw : "FI*" FLOAT
+    flop_throw : "FO*" FLOAT
+    airturn_throw : "AT*" FLOAT
     rest : "."
     shake : "|"
     catch : "x"
     
+    // Accidentals   
+    knock : "\\knock"
+    accent : "\\accent"
+    staccato : "\\staccato"
+    tenuto : "\\tenuto"
+    stacatissimo : "\\stacatissimo"
+    marcato : "\\marcato"
+    marcato_staccato : "\\marcatoStaccato"
+    accent_staccato : "\\accentStaccato"
+    tenuto_staccato : "\\tenutoStaccato"
+    tenuto_accent : "\\tenutoAccent"
+    stress : "\\stress"
+    unstress : "\\unstress"
+    marcato_tenuto : "\\marcatoTenuto"
+    
+    // Dynamics
+    dynamic_pppppp : "\\pppppp"
+    dynamic_ppppp : "\\ppppp"
+    dynamic_pppp : "\\pppp"
+    dynamic_ppp : "\\ppp"
+    dynamic_pp : "\\pp"
+    dynamic_p : "\\p"
+    dynamic_mp : "\\mp"
+    dynamic_mf : "\\mf"
+    dynamic_f : "\\f"
+    dynamic_ff : "\\ff"
+    dynamic_fff : "\\fff"
+    dynamic_ffff : "\\ffff"
+    dynamic_fffff : "\\fffff"
+    dynamic_ffffff : "\\ffffff"
+    
     // Terminals
-    BOOLEAN : "true" | "false"
     INTEGER : /[0-9]+/
     FLOAT : /[0-9]+[.]?[0-9]*/
     COMMENT : "#" /[^\n]*/ "\n"

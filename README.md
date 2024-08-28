@@ -51,7 +51,7 @@ Each document can have any number of scores, which is where musical notes and sy
   \layout {
     ...
   }
-  \segment {
+  \voice "My Voice" {
     ...
   }
 }
@@ -66,54 +66,62 @@ If a staff isn't associated with a voice, it _will not_ appear in the rendered s
 ```
 \layout {
   \staff "Player 1" {
-    \displayName true           # if set to true, renders voice name (Player 1) before staff in document (defaults to true)
-    \westernNotation true       # if set to true, renders western notation instead of traditional notation (defaults to false)
+    \includeWesternNotation     # render western notation below traditional notation
   }
-  \staff "Player 2" {
-    \displayName true
-    \westernNotation false
-  }
+  \staff "Player 2" {}
 }
 ```
 
-##### Score Segment
+##### Score Voices
 
-Each score segment contains information about different voices (players) and can have exactly one time signature and dot value associated with it. For changes in time signature or dot value, a new segment will need to be defined.
+Each voice contains all relevant information about notes, as well as time signatures and dot value associations. Changes in time signature or dot value only need to be defined in one voice, and will be inferred in all other voices.
 
 Note, inside the `\left` and `right` sections is where notes will be defined. More information on that can be found in the Asalato Notation section below
 
 ```
-\segment {
-  \time 6/8     # time signature is 4/4
-  \dotValue 8   # each note will get an eigth-note
-
-  \voice "Player 1" {
-    \right {              # defines all of the notes played in the right-hand
-      .  .  FI .  .  FO
-    }
-
-    \left {               # defines all of the notes played in the left-hand
-      FI .  .  FO .  .
-    }
+\voice "Player 1" {
+  \right {              # defines all of the notes played in the right-hand
+    \time 4/4           # time signature is 4/4
+    \dotValue 1/8       # each note will get an eigth-note
+    .  .  FI .  .  FO
   }
 
-  \voice "Player 2" {
-    \right {
-      FI .  FI .  FI .
-    }
+  \left {               # defines all of the notes played in the left-hand
+    FI .  .  FO .  .
+  }
+}
 
-    \left {
-      .  FO .  FO .  FO
-    }
+\voice "Player 2" {
+  \right {
+    FI .  FI .  FI .
+  }
+
+  \left {
+    .  FO .  FO .  FO
   }
 }
 ```
 
-##### Asalato Notation
+In addition to standard notes, tuples are supported. When adding a tuple, it is important to clearly define how many dot values it should span across.
+
+```
+tuple {
+  \duration 4           # 4 1/8 note lengths (1/2 measure)
+  FI . FO
+}
+```
+
+Each note can also have modifiers applied to it. These render additional components in-line with the given note, such as articulations, dynamics, and knocks. Each modifier should be included directly after the note it is modifying:
+
+```
+FI\ff\knock   # adds fortissimo dynamic marking and knock marking to the same note.
+```
+
+##### Asalato Notes
 
 The full list of supported Asalato notes is included below:
 
-| Name            | Notation | Parameters                          |
+| Note            | Notation | Parameters                          |
 | --------------- | -------- | ----------------------------------- |
 | flip            | FI       |                                     |
 | flip            | FO       |                                     |
@@ -129,9 +137,49 @@ The full list of supported Asalato notes is included below:
 | den up grab     | DU+      |                                     |
 | airturn         | AT       |                                     |
 | airturn_fake    | AF       |                                     |
-| flip throw      | FI\*(#)  | # is the number of flips (e.g. 0.5) |
-| flop throw      | FO\*(#)  | # is the number of flips (e.g. 0.5) |
-| airturn throw   | AT\*(#)  | # is the number of flips (e.g. 0.5) |
+| flip throw      | FI\*#    | # is the number of flips (e.g. 0.5) |
+| flop throw      | FO\*#    | # is the number of flips (e.g. 0.5) |
+| airturn throw   | AT\*#    | # is the number of flips (e.g. 0.5) |
 | rest            | .        |                                     |
 | shake           | \|       |                                     |
 | catch           | x        |                                     |
+
+##### Modifiers
+
+A full list of supported note modifiers is included below:
+
+| Asalato Notations | Notation |
+| ----------------- | -------- |
+| knock             | \knock   |
+
+| Articulations    | Notation         |
+| ---------------- | ---------------- |
+| accent           | \accent          |
+| staccato         | \staccato        |
+| tenuto           | \tenuto          |
+| stacatissimo     | \stacatissimo    |
+| marcato          | \marcato         |
+| marcato staccato | \marcatoStaccato |
+| accent staccato  | \accentStaccato  |
+| tenuto staccato  | \tenutoStaccato  |
+| tenuto accent    | \tenutoAccent    |
+| stress           | \stress          |
+| unstress         | \unstress        |
+| marcato tenuto   | \marcatoTenuto   |
+
+| Dynamics    | Notation |
+| ----------- | -------- |
+| PPPPPP (x6) | \pppppp  |
+| PPPPP (x5)  | \ppppp   |
+| PPPP (x4)   | \pppp    |
+| PPP (x3)    | \ppp     |
+| PP          | \pp      |
+| P           | \p       |
+| MP          | \mp      |
+| MF          | \mf      |
+| F           | \f       |
+| FF          | \ff      |
+| FFF (x3)    | \fff     |
+| FFFF (x4)   | \ffff    |
+| FFFFF (x5)  | \fffff   |
+| FFFFFF (x6) | \ffffff  |

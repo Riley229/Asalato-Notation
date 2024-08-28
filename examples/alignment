@@ -9,7 +9,7 @@
 	\header "Flip-Flop -> Triplet Den-Den"
 	\layout {
 		\staff "Player #1" {
-			\displayName false
+			#\includeWesternNotation
 		}
 	}
 
@@ -17,11 +17,11 @@
 			\right {
 				\time 4/4
 		\dotValue 1/8
-				FI FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x FI FI FI FI
+				FI FO FI+ FO+ CI CO CI+ CO+\knock DD DU DD+ DU+ AT AF FI*1.5 FO*1 AT*1 . | x FI FI FI FI
 			}
 
 			\left {
-				FO FI+ FO+ CI CO CI+ CO+ DD DU DD+ DU+ AT AF FI*(1) FO*(1) AT*(1) . | x FI FI FI FI FI
+				FO FI+ FO+ CI CO CI+ CO+ DD\knock DU DD+ DU+ AT AF FI*1 FO*1 AT*0.5\staccato . | x FI FI FI FI FI
 			}
 		}
 }
