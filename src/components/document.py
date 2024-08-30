@@ -1,22 +1,77 @@
 from neoscore.common import *
 from neoscore.core import paper
 from components.score import Score
-from components.util import parse_escaped_string, parse_paper_size
+from components.util import parse_escaped_string, parse_margin
+
+
+class DocumentPaper:
+  def __init__(self, size='letter'):
+    self.width = None
+    self.height = None
+    self.margin = None
+    self.margin_left = None
+    self.margin_right = None
+    self.margin_top = None
+    self.margin_bottom =None
+    self.set_defaults(size)
+    
+  def set_defaults(self, size):
+    if size == 'letter':
+      self.width = self.width if (self.width != None) else Inch(8.5)
+      self.height = self.height if (self.height != None) else Inch(11)
+      self.margin = self.margin if (self.margin != None) else Inch(1)
+    elif size == 'A4':
+      self.width = self.width if (self.width != None) else Mm(210)
+      self.height = self.height if (self.height != None) else Mm(297)
+      self.margin = self.margin if (self.margin != None) else Mm(20)
+
+  def from_tree(tree):
+    document_paper = DocumentPaper()
+    for option in tree.children:
+      subtree = option.children[0]
+      if subtree.data.value == 'paper_size':
+        document_paper.set_defaults(subtree.children[0].value)
+      elif subtree.data.value == 'paper_margin':
+        document_paper.margin = parse_margin(subtree.children[0].children[0])
+      elif subtree.data.value == 'paper_margin_left':
+        document_paper.margin_left = parse_margin(subtree.children[0].children[0])
+      elif subtree.data.value == 'paper_margin_right':
+        document_paper.margin_right = parse_margin(subtree.children[0].children[0])
+      elif subtree.data.value == 'paper_margin_top':
+        document_paper.margin_top = parse_margin(subtree.children[0].children[0])
+      elif subtree.data.value == 'paper_margin_bottom':
+        document_paper.margin_bottom = parse_margin(subtree.children[0].children[0])
+    return document_paper
+  
+  def get_margin_top(self):
+    return self.margin_top if (self.margin_top != None) else self.margin
+  
+  def get_margin_right(self):
+    return self.margin_right if (self.margin_right != None) else self.margin
+  
+  def get_margin_bottom(self):
+    return self.margin_bottom if (self.margin_bottom != None) else self.margin
+  
+  def get_margin_left(self):
+    return self.margin_left if (self.margin_left != None) else self.margin
+  
+  def create(self):
+    return Paper(self.width, self.height, self.get_margin_top(), self.get_margin_right(), self.get_margin_bottom(), self.get_margin_left())
 
 
 class Metadata:
-  def __init__(self, paper_size=paper.LETTER, title='', subtitle='', composer=''):
-    self.paper_size = paper_size
+  def __init__(self, paper=DocumentPaper(), title='', subtitle='', composer=''):
+    self.paper = paper
     self.title = title
     self.subtitle = subtitle
     self.composer = composer
     
   def from_tree(tree):
-    metadata = Metadata()
+    metadata = Metadata(DocumentPaper(), '', '', '')
     for child in tree.children:
       for option in child.children:
-        if option.data.value == 'paper_size':
-          metadata.papersize = parse_paper_size(option.children[0].value)
+        if option.data.value == 'paper_format':
+          metadata.paper = DocumentPaper.from_tree(option)
         elif option.data.value == 'title':
           metadata.title = parse_escaped_string(option.children[0].value)
         elif option.data.value == 'subtitle':

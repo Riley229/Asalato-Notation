@@ -84,11 +84,13 @@ def get_y_alignment_offset(base_type, base_notation, accessory_type, accessory_n
     return get_y_offset(base_type, base_notation, right_hand) - Unit(accessory_data['height'] * get_note_scale())
   
 # Parsing Utilities
-def parse_paper_size(str):
-  if str == 'letter':
-    return paper.LETTER
+def parse_margin(tree):
+  if tree.data.value == 'inch':
+    return Inch(float(tree.children[0].value))
+  elif tree.data.value == 'millimeter':
+    return Mm(float(tree.children[0].value))
   else:
-    return paper.A4
+    return None
 
 def parse_time_signature(str):
   time = TimeSignature()

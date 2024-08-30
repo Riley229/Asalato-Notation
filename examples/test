@@ -26,7 +26,7 @@
 			}
 			\tuplet {
 				\duration 4
-				.FI\accentStaccato.
+				.FI\accentStaccato.FO\tenutoStaccato.FI\tenutoAccent
 			}
 			\tuplet {
 				\duration 4
@@ -47,7 +47,7 @@
 			}
 			\tuplet {
 				\duration 4
-				FO.FI
+				FO.FI.FO.
 			}
 			\tuplet {
 				\duration 4

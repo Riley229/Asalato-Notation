@@ -8,7 +8,7 @@ def main(args):
   
   # setup neoscore
   neoscore.setup()
-  neoscore.document.paper = document.metadata.paper_size
+  neoscore.document.paper = document.metadata.paper.create()
   
   # populate document with objects
   document.draw()

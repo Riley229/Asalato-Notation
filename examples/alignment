@@ -1,8 +1,13 @@
 \meta {
 	\paper {
 		\size letter
+		\margin 0.25in
+		\marginTop 40mm
 	}
-	\title "Asalato Notation Examples"
+	\title "Asalato Notation Examples" {
+		\font "Calibri"
+		\fontSize 32
+	}
 	\subtitle "with Western musical notation"
 	\composer "J.S. Bach"
 }
@@ -11,12 +16,15 @@
 	\header "Flip-Flop -> Triplet Den-Den"
 	\layout {
 		\staff "Player #1"
+		\extendLastLine
+		\notationScale 1.2
+		\staffSpacing 2.5
 	}
 
 		\voice "Player #1" {
 			\right {
 				\time 4/4
-		\dotValue 1/8
+				\dotValue 1/8
 				FI\knock FO\knock FI+\knock FO+\knock CI\knock CO\knock CI+\knock CO+\knock DD\knock DU\knock DD+\knock DU+\knock AT\knock AF\knock
 				FI*1.5 FO*1 AT*1 . | x FI FI FI FI
 			}
