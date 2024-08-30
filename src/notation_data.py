@@ -2,220 +2,239 @@ note_data = {
   'flip': {
     'left': {
       'file_path': 'resources/flip-LH.svg',
-      # x_offset: defines whitespace added to left of note for alignment
-      #           note stems should be horizontally centered around the 35th pixel with a width of 2 pixels (pixels 34-36)
-      'x_offset': 4,
-      # y_offset: defines whitespace added to top of note for alignment
-      #           note stems should be vertically centered around the 52nd pixel with a height of 42 pixels (pixels 31-73)
-      'y_offset': 21,
+      'center_x': 29,
+      'center_y': 31,
+      'height': 52,
     },
     'right': {
       'file_path': 'resources/flip-RH.svg',
-      'x_offset': 24,
-      'y_offset': 21,
+      'center_x': 11,
+      'center_y': 31,
+      'height': 52,
     },
   },
   'flop': {
     'left': {
       'file_path': 'resources/flop-LH.svg',
-      'x_offset': 4,
-      'y_offset': 31,
+      'center_x': 29,
+      'center_y': 21,
+      'height': 52,
     },
     'right': {
       'file_path': 'resources/flop-RH.svg',
-      'x_offset': 24,
-      'y_offset': 31,
+      'center_x': 11,
+      'center_y': 21,
+      'height': 52,
     },
   },
   'flip_grab': {
     'left': {
       'file_path': 'resources/flip-LH-G.svg',
-      'x_offset': 4,
-      'y_offset': 17,
+      'center_x': 29,
+      'center_y': 35,
+      'height': 56,
     },
     'right': {
       'file_path':  'resources/flip-RH-G.svg',
-      'x_offset': 24,
-      'y_offset': 17,
+      'center_x': 11,
+      'center_y': 35,
+      'height': 56,
     },
   },
   'flop_grab': {
     'left': {
       'file_path': 'resources/flop-LH-G.svg',
-      'x_offset': 4,
-      'y_offset': 31,
+      'center_x': 29,
+      'center_y': 21,
+      'height': 56,
     },
     'right': {
       'file_path':  'resources/flop-RH-G.svg',
-      'x_offset': 24,
-      'y_offset': 31,
+      'center_x': 11,
+      'center_y': 21,
+      'height': 56,
     },
   },
   'click_flip': {
-    'left': {
+    'both': {
       'file_path': 'resources/click-FI.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
-    },
-    'right': {
-      'file_path': 'resources/click-FI.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
+      'center_x': 9.5,
+      'center_y': 21,
+      'height': 42,
     },
   },
   'click_flop': {
-    'left': {
+    'both': {
       'file_path': 'resources/click-FO.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
-    },
-    'right': {
-      'file_path': 'resources/click-FO.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
+      'center_x': 9.5,
+      'center_y': 21,
+      'height': 42,
     },
   },
   'click_flip_grab': {
-    'left': {
+    'both': {
       'file_path': 'resources/click-FI-G.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
-    },
-    'right': {
-      'file_path': 'resources/click-FI-G.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
+      'center_x': 9.5,
+      'center_y': 21,
+      'height': 42,
     },
   },
   'click_flop_grab': {
-    'left': {
+    'both': {
       'file_path': 'resources/click-FO-G.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
-    },
-    'right': {
-      'file_path': 'resources/click-FO-G.svg',
-      'x_offset': 25.5,
-      'y_offset': 31,
+      'center_x': 9.5,
+      'center_y': 21,
+      'height': 42,
     },
   },
   'den_down': {
     'left': {
       'file_path': 'resources/den-down-LH.svg',
-      'y_offset': 31,
+      'center_x': 33,
+      'center_y': 21,
+      'height': 52,
     },
     'right': {
       'file_path': 'resources/den-down-RH.svg',
-      'x_offset': 24,
-      'y_offset': 31,
+      'center_x': 11,
+      'center_y': 21,
+      'height': 52,
     },
   },
   'den_up': {
     'left': {
       'file_path': 'resources/den-up-LH.svg',
-      'y_offset': 21,
+      'center_x': 33,
+      'center_y': 31,
+      'height': 52,
     },
     'right': {
       'file_path': 'resources/den-up-RH.svg',
-      'x_offset': 24,
-      'y_offset': 21,
+      'center_x': 11,
+      'center_y': 31,
+      'height': 52,
     },
   },
   'den_down_grab': {
     'left': {
       'file_path': 'resources/den-down-LH-G.svg',
-      'y_offset': 31,
+      'center_x': 33,
+      'center_y': 21,
+      'height': 56,
     },
     'right': {
       'file_path': 'resources/den-down-RH-G.svg',
-      'x_offset': 24,
-      'y_offset': 31,
+      'center_x': 11,
+      'center_y': 21,
+      'height': 55,
     },
   },
   'den_up_grab': {
     'left': {
       'file_path': 'resources/den-up-LH-G.svg',
-      'y_offset': 17,
+      'center_x': 33,
+      'center_y': 35,
+      'height': 56,
     },
     'right': {
       'file_path': 'resources/den-up-RH-G.svg',
-      'x_offset': 24,
-      'y_offset': 17,
+      'center_x': 11,
+      'center_y': 35,
+      'height': 56,
     },
   },
   'airturn': {
     'left': {
       'file_path': 'resources/airturn-LH.svg',
-      'x_offset': 4,
-      'y_offset': 21,
+      'center_x': 29,
+      'center_y': 31,
+      'height': 52,
     },
     'right': {
       'file_path': 'resources/airturn-RH.svg',
-      'x_offset': 14,
-      'y_offset': 21,
+      'center_x': 19,
+      'center_y': 31,
+      'height': 52,
     },
   },
   'airturn_fake': {
     'left': {
       'file_path': 'resources/airturn-fake-LH.svg',
-      'x_offset': 4,
-      'y_offset': 21,
+      'center_x':29,
+      'center_y': 31,
+      'height': 52,
     },
     'right': {
       'file_path': 'resources/airturn-fake-RH.svg',
-      'x_offset': 14,
-      'y_offset': 21,
+      'center_x': 19,
+      'center_y': 31,
+      'height': 52,
     },
   },
   'flip_throw': {
     'both': {
       'file_path': 'resources/flip-throw.svg',
-      'x_offset': 9.5,
+      'center_x': 25.5,
+      'center_y': 52,
+      'height': 73,
     },
   },
   'flop_throw': {
     'both': {
       'file_path': 'resources/flop-throw.svg',
-      'x_offset': 14,
-      'y_offset': 31,
+      'center_x': 21,
+      'center_y': 21,
+      'height': 65,
     },
   },
   'airturn_throw': {
     'both': {
       'file_path': 'resources/airturn-throw.svg',
-      'x_offset': 4,
-      'y_offset': 2,
+      'center_x': 31,
+      'center_y': 50,
+      'height': 71,
     },
   },
   'rest': {
     'both': {
       'file_path': 'resources/rest.svg',
-      'x_offset': 31.5,
-      'y_offset': 48.5,
+      'center_x': 3.5,
+      'center_y': 3.5,
+      'height': 7,
     },
   },
   'shake': {
     'both': {
       'file_path': 'resources/shake.svg',
-      'x_offset': 34,
-      'y_offset': 45.5,
+      'center_x': 1,
+      'center_y': 6.5,
+      'height': 13,
     },
   },
   'catch': {
     'both': {
       'file_path': 'resources/catch.svg',
-      'x_offset': 24,
-      'y_offset': 21,
+      'center_x': 11,
+      'center_y': 31,
+      'height': 52,
     },
   },
 }
 
 modifier_data = {
   'knock': {
-    'both': {
-      'file_path': 'resources/knock.svg',
-      'x_offset': 27,
-      'y_offset': -8.5,
+    'left': {
+      'file_path': 'resources/knock-LH.svg',
+      'center_x': 8,
+      'center_y': 8.5,
+      'height': 17,
+    },
+    'right': {
+      'file_path': 'resources/knock-RH.svg',
+      'center_x': 8,
+      'center_y': 8.5,
+      'height': 17,
+      'alignment': 'bottom',
     },
   },
   'accent': {
@@ -233,7 +252,7 @@ modifier_data = {
       'glyph': 'articTenutoAbove',
     },
   },
-  'stacatissimo': {
+  'staccatissimo': {
     'both': {
       'glyph': 'articStaccatissimoAbove',
     },
@@ -281,71 +300,85 @@ modifier_data = {
   'dynamic_pppppp': {
     'both': {
       'glyph': 'dynamicPPPPPP',
+      'alignment': 'bottom',
     },
   },
   'dynamic_ppppp': {
     'both': {
       'glyph': 'dynamicPPPPP',
+      'alignment': 'bottom',
     },
   },
   'dynamic_pppp': {
     'both': {
       'glyph': 'dynamicPPPP',
+      'alignment': 'bottom',
     },
   },
   'dynamic_ppp': {
     'both': {
       'glyph': 'dynamicPPP',
+      'alignment': 'bottom',
     },
   },
   'dynamic_pp': {
     'both': {
       'glyph': 'dynamicPP',
+      'alignment': 'bottom',
     },
   },
   'dynamic_p': {
     'both': {
       'glyph': 'dynamicPiano',
+      'alignment': 'bottom',
     },
   },
   'dynamic_mp': {
     'both': {
       'glyph': 'dynamicMP',
+      'alignment': 'bottom',
     },
   },
   'dynamic_mf': {
     'both': {
       'glyph': 'dynamicMF',
+      'alignment': 'bottom',
     },
   },
   'dynamic_f': {
     'both': {
       'glyph': 'dynamicForte',
+      'alignment': 'bottom',
     },
   },
   'dynamic_ff': {
     'both': {
       'glyph': 'dynamicFF',
+      'alignment': 'bottom',
     },
   },
   'dynamic_fff': {
     'both': {
       'glyph': 'dynamicFFF',
+      'alignment': 'bottom',
     },
   },
   'dynamic_ffff': {
     'both': {
       'glyph': 'dynamicFFFF',
+      'alignment': 'bottom',
     },
   },
   'dynamic_fffff': {
     'both': {
       'glyph': 'dynamicFFFFF',
+      'alignment': 'bottom',
     },
   },
   'dynamic_ffffff': {
     'both': {
       'glyph': 'dynamicFFFFFF',
+      'alignment': 'bottom',
     },
   },
 }

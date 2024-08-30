@@ -55,45 +55,64 @@ class ScoreDisplay:
     if self.staff == None:
       return y_offset
     
-    length = ZERO
+    # seperate the measures into seperate lines based on calculated widths
+    lines = []
+    max_line_width = neoscore.document.paper.live_width - Unit(15)
+    current_line = []
+    current_line_width = ZERO
     for measure in self.measures:
-      length += measure.minimum_width()
+      measure_width = measure.get_width()
+      if (current_line_width == ZERO) or (measure_width + current_line_width < max_line_width):
+        current_line.append(measure)
+        current_line_width += measure_width
+      else:
+        lines.append(current_line)
+        current_line = [measure]
+        current_line_width = ZERO
+        
+    # ensure the final line is added
+    if len(current_line) > 0:
+      lines.append(current_line)
 
-    flowable = Flowable((ZERO, Unit(y_offset)), parent, length - Unit(1), Unit(110), break_threshold=Unit(300))
+    # calculate total length of all lines and create flowable/staff group objects
+    total_length = len(lines) * max_line_width
+    flowable = Flowable((ZERO, Unit(y_offset)), parent, total_length, Unit(110), break_threshold=Unit(300))
     staff_group = StaffGroup()
     
     # create staff objects
-    Staff((ZERO, y_offset), flowable, length * 3, staff_group, line_count=0) # additional staff is used to "lead" barlines
-    right_staff = Staff((ZERO, y_offset + note_width(0.5)), flowable, length, staff_group, line_count=0)
+    Staff((ZERO, y_offset), flowable, total_length, staff_group, line_count=0) # additional staff is used to "lead" barlines
+    right_staff = Staff((ZERO, y_offset + note_width(0.5)), flowable, total_length, staff_group, line_count=0)
     InstrumentName((right_staff.unit(-2), right_staff.center_y), right_staff, 'R', 'R', font=Font('Arial', Unit(10), weight=50))
-    left_staff = Staff((ZERO, y_offset + note_height(1.5)), flowable, length, staff_group, line_count=0)
+    left_staff = Staff((ZERO, y_offset + note_height(1.5)), flowable, total_length, staff_group, line_count=0)
     InstrumentName((left_staff.unit(-2), left_staff.center_y), left_staff, 'L', 'L', font=Font('Arial', Unit(10), weight=50))
-    Staff((ZERO, y_offset + note_height(2.0)), flowable, length, staff_group, line_count=0) # additional staff is used to "ground" barlines
+    Staff((ZERO, y_offset + note_height(2.0)), flowable, total_length, staff_group, line_count=0) # additional staff is used to "ground" barlines
     
-    # Optionally, create western staff object
-    western_staff = None
-    if self.staff.include_western_notation:
-      western_staff = Staff((ZERO, y_offset + note_height(2.0) + Unit(20)), flowable, length, staff_group, line_count=1)
-      Clef(ZERO, western_staff, 'percussion_1')
-    
+    # render each line, ensuring measures fill to the end, unless rendering the final line
     x_offset = ZERO
     time_signature = None
     note_duration = None
-    for measure in self.measures:
-      render_time_signature = False
-      render_note_duration = False
-      if time_signature != measure.time_signature:
-        render_time_signature = True
+    for line in lines:
+      # calculate additional width to "inject" into each measure
+      line_width = ZERO
+      for measure in line:
+        line_width += measure.get_width()
+      added_width = (max_line_width - line_width) / len(line)
+      
+      # render each measure in the line
+      for measure in line:
+        # determine if a new time signature and/or note duration need to be rendered
+        render_time_signature = (time_signature != measure.time_signature)
         time_signature = measure.time_signature
-      if note_duration != measure.note_duration:
-        render_note_duration = True
+        render_note_duration = (note_duration != measure.note_duration)
         note_duration = measure.note_duration
         
-      measure.draw(x_offset, right_staff, left_staff, western_staff, staff_group, render_note_duration, render_time_signature, self.staff.include_western_notation)
-      x_offset += measure.minimum_width()
+        # render measure
+        measure_width = measure.get_width()
+        measure.draw(x_offset, measure_width + added_width, right_staff, left_staff, staff_group, render_note_duration, render_time_signature)
+        x_offset += measure_width + added_width
       
     SystemLine(staff_group)   # Automatically adds barlines to the beginning of each line
-    return flowable.canvas_pos().y + flowable.height + Unit(50)
+    return flowable.canvas_pos().y + (flowable.height * len(lines)) + Unit(20)
   
   
 class Voice:
@@ -122,7 +141,7 @@ class Voice:
         hand_pattern.append(Note.from_tree(notation, right_hand))
     
   def from_tree(tree):
-    voice = Voice()
+    voice = Voice('', [], [], [], [])
     for child in tree.children:
       if type(child) == Token:
         voice.name = parse_escaped_string(child.value)
@@ -137,17 +156,14 @@ class Voice:
   
   
 class ScoreStaff:
-  def __init__(self, name='', include_western_notation=False):
+  def __init__(self, name=''):
     self.name = name
-    self.include_western_notation = include_western_notation
     
   def from_tree(tree):
     staff = ScoreStaff()
     for child in tree.children:
       if type(child) == Token:
         staff.name = parse_escaped_string(child.value)
-      elif child.data.value == 'include_western_notation':
-        staff.include_western_notation = True
     
     return staff
 
@@ -160,7 +176,7 @@ class Score:
     self.display = display
     
   def from_tree(tree):
-    score = Score()
+    score = Score('', [], [], None)
     for child in tree.children:
       for option in child.children:
         if option.data.value == 'score_header':

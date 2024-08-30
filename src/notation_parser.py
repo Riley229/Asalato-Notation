@@ -6,26 +6,54 @@ notation_parser = Lark(r"""
     value : score* metadata? score*
     
     metadata : "\\meta" "{" meta_value* "}"
-    meta_value : paper_size 
-               | title 
+    meta_value : paper_format
+               | title
                | subtitle
                | composer
+               
+    paper_format : "\\paper" "{" paper_option* "}"
+    paper_option : paper_size
+                 | paper_margin
+                 | paper_margin_left
+                 | paper_margin_right
+                 | paper_margin_top
+                 | paper_margin_bottom
               
-    paper_size : "\\papersize" PAPERSIZE
-    title : "\\title" ESCAPED_STRING
-    subtitle : "\\subtitle" ESCAPED_STRING
-    composer : "\\composer" ESCAPED_STRING
+    paper_size : "\\size" PAPERSIZE
+    paper_margin : "\\margin" margin
+    paper_margin_left : "\\marginLeft" margin
+    paper_margin_right : "\\marginRight" margin
+    paper_margin_top : "\\marginTop" margin
+    paper_margin_bottom : "\\marginBottom" margin
+    
+    margin : (inch | millimeter)
+    inch : FLOAT "in"
+    millimeter : FLOAT "mm"
+    
+    title : "\\title" ESCAPED_STRING ("{" text_formatting? "}")?
+    subtitle : "\\subtitle" ESCAPED_STRING ("{" text_formatting? "}")?
+    composer : "\\composer" ESCAPED_STRING ("{" text_formatting? "}")?
+    
+    text_formatting : font? fontsize?
+                    | fontsize font
+    font : "\\font" ESCAPED_STRING
+    fontsize : "\\fontSize" FLOAT
                     
     score : "\\score" "{" score_value* "}"
-    score_value : score_header 
-                | score_layout 
+    score_value : score_header
+                | score_notation_scale
+                | score_staff_spacing
+                | score_extend_last_line
+                | score_layout
                 | score_voice
                 
-    score_header : "\\header" ESCAPED_STRING
+    score_header : "\\header" ESCAPED_STRING ("{" text_formatting? "}")?
+    score_notation_scale : "\\notationScale" FLOAT
+    score_staff_spacing : "\\staffSpacing" FLOAT
+    score_extend_last_line : "\\extendLastLine"
+    
     score_layout : "\\layout" "{" staff* "}"
-
-    staff : "\\staff" ESCAPED_STRING "{" include_western_notation? "}"                
-    include_western_notation : "\\includeWesternNotation"
+    staff : "\\staff" ESCAPED_STRING
     
     score_voice : "\\voice" ESCAPED_STRING "{" voice_hand* "}"
     voice_hand : left_hand
@@ -74,7 +102,7 @@ notation_parser = Lark(r"""
                   | accent
                   | staccato
                   | tenuto
-                  | stacatissimo
+                  | staccatissimo
                   | marcato
                   | marcato_staccato
                   | accent_staccato
@@ -120,12 +148,14 @@ notation_parser = Lark(r"""
     shake : "|"
     catch : "x"
     
-    // Accidentals   
+    // Asalato Modifiers
     knock : "\\knock"
+    
+    // Accidentals
     accent : "\\accent"
     staccato : "\\staccato"
     tenuto : "\\tenuto"
-    stacatissimo : "\\stacatissimo"
+    staccatissimo : "\\staccatissimo"
     marcato : "\\marcato"
     marcato_staccato : "\\marcatoStaccato"
     accent_staccato : "\\accentStaccato"

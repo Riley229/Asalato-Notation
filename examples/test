@@ -1,33 +1,49 @@
 \meta {
-	\papersize letter
+	\paper {
+		\size letter
+	}
 	\title "Asalato Notation Examples"
 	\subtitle "with Western musical notation"
 	\composer "J.S. Bach"
 }
 
-# currently only supports one score per document
 \score {
 	\header "Flip-Flop -> Triplet Den-Den"
 	\layout {
 		# currently only supports one staff per score
-		\staff "Player #1" {
-			#\includeWesternNotation
-		}
+		\staff "Player #1"
 	}
 
 	\voice "Player #1" {
 		\right {
 			\time 4/4
 			\dotValue 1/8
-			FI\ff..FO\knock....
-			FI..FO\staccato....
+			FI\ppp\accent..FO\mf\staccato....
+			FI\fff\tenuto..FO\staccatissimo....
 			\tuplet {
 				\duration 4
-				FI.FO
+				FI\marcato.FO\marcatoStaccato
 			}
 			\tuplet {
 				\duration 4
-				.FI.
+				.FI\accentStaccato.
+			}
+			\tuplet {
+				\duration 4
+				FO\tenutoStaccato.FI\tenutoAccent
+			}
+			\tuplet {
+				\duration 4
+				.FO\stress.
+			}
+		}
+
+		\left {
+			....FI\knock..FO\marcatoTenuto
+			....FI\unstress..FO
+			\tuplet {
+				\duration 4
+				.FI\pppppp.
 			}
 			\tuplet {
 				\duration 4
@@ -37,14 +53,83 @@
 				\duration 4
 				.FO.
 			}
+			\tuplet {
+				\duration 4
+				FI.FO
+			}
+		}
+	}
+}
+
+\score {
+	\header "Multiple Score Test"
+	\layout {
+		# currently only supports one staff per score
+		\staff "Player #1"
+	}
+
+	\voice "Player #1" {
+		\right {
+			\time 4/4
+			\dotValue 1/8
+			FI\ppp\accent..FO\mf\staccato....
+			FI\fff\tenuto..FO\staccatissimo....
+			\tuplet {
+				\duration 4
+				FI\marcato.FO\marcatoStaccato
+			}
+			\tuplet {
+				\duration 4
+				.FI\accentStaccato.
+			}
+			\tuplet {
+				\duration 4
+				FO\tenutoStaccato.FI\tenutoAccent
+			}
+			\tuplet {
+				\duration 4
+				.FO\stress.
+			}
+			\tuplet {
+				\duration 4
+				FI\marcato.FO\marcatoStaccato
+			}
+			\tuplet {
+				\duration 4
+				.FI\accentStaccato.
+			}
+			\tuplet {
+				\duration 4
+				FO\tenutoStaccato.FI\tenutoAccent
+			}
+			\tuplet {
+				\duration 4
+				.FO\stress.
+			}
 		}
 
 		\left {
-			....FI\knock..FO
-			....FI\marcato..FO
+			....FI\knock..FO\marcatoTenuto
+			....FI\unstress..FO
 			\tuplet {
 				\duration 4
-				.FI.
+				.FI\pppppp.
+			}
+			\tuplet {
+				\duration 4
+				FO.FI
+			}
+			\tuplet {
+				\duration 4
+				.FO.
+			}
+			\tuplet {
+				\duration 4
+				FI.FO
+			}
+			\tuplet {
+				\duration 4
+				.FI\pppppp.
 			}
 			\tuplet {
 				\duration 4

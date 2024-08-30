@@ -52,19 +52,36 @@ def get_glyph_id(type, notation, right_hand):
   data = get_data_definition(type, notation, right_hand)
   return data['glyph']
    
-def get_img_x_offset(type, notation, right_hand):
+def get_x_offset(type, notation, right_hand):
   data = get_data_definition(type, notation, right_hand)
-  if data.get('x_offset'):
-    return Unit(data['x_offset'] * get_note_scale())
+  if data.get('center_x'):
+    return Unit(((default_note_width / 2) - data['center_x']) * get_note_scale())
   else:
-    return ZERO
+    return note_width(0.5)
   
-def get_img_y_offset(type, notation, right_hand):
+def get_y_alignment(type, notation, right_hand):
   data = get_data_definition(type, notation, right_hand)
-  if data.get('y_offset'):
-    return Unit(data['y_offset'] * get_note_scale())
+  if data.get('alignment'):
+    return data['alignment']
   else:
-    return ZERO
+    return 'top'  
+  
+def get_y_offset(type, notation, right_hand):
+  base_value = -1 if get_y_alignment(type, notation, right_hand) == 'top' else 1
+  data = get_data_definition(type, notation, right_hand)
+  if data.get('center_y'):
+    return (base_value * note_height(0.5)) + Unit(((default_note_height / 2) - data['center_y']) * get_note_scale())
+  else:
+    return base_value * note_height(0.5)
+
+def get_y_alignment_offset(base_type, base_notation, accessory_type, accessory_notation, right_hand):
+  alignment = get_y_alignment(accessory_type, accessory_notation, right_hand)
+  if alignment == 'bottom':
+    base_data = get_data_definition(base_type, base_notation, right_hand)
+    return get_y_offset(base_type, base_notation, right_hand) + Unit(base_data['height'] * get_note_scale())
+  else:
+    accessory_data = get_data_definition(accessory_type, accessory_notation, right_hand)
+    return get_y_offset(base_type, base_notation, right_hand) - Unit(accessory_data['height'] * get_note_scale())
   
 # Parsing Utilities
 def parse_paper_size(str):
