@@ -1,6 +1,6 @@
 from neoscore.common import *
-from neoscore.core import paper
 from components.score import Score
+from components.text import DocumentText
 from components.util import parse_escaped_string, parse_margin
 
 
@@ -60,7 +60,7 @@ class DocumentPaper:
 
 
 class Metadata:
-  def __init__(self, paper=DocumentPaper(), title='', subtitle='', composer=''):
+  def __init__(self, paper=DocumentPaper(), title=DocumentText(), subtitle=DocumentText(), composer=DocumentText()):
     self.paper = paper
     self.title = title
     self.subtitle = subtitle
@@ -73,19 +73,25 @@ class Metadata:
         if option.data.value == 'paper_format':
           metadata.paper = DocumentPaper.from_tree(option)
         elif option.data.value == 'title':
-          metadata.title = parse_escaped_string(option.children[0].value)
+          metadata.title = DocumentText.from_tree(option, 'Arial', Unit(25), 50, False)
+          # metadata.title = parse_escaped_string(option.children[0].value)
         elif option.data.value == 'subtitle':
-          metadata.subtitle = parse_escaped_string(option.children[0].value)
+          metadata.subtitle = DocumentText.from_tree(option, 'Arial', Unit(10), 50, False)
+          # metadata.subtitle = parse_escaped_string(option.children[0].value)
         elif option.data.value == 'composer':
-          metadata.composer = parse_escaped_string(option.children[0].value)
+          metadata.composer = DocumentText.from_tree(option, 'Arial', Unit(10), 50, False)
+          # metadata.composer = parse_escaped_string(option.children[0].value)
           
     return metadata
   
   def draw(self):
     half_paper_width = neoscore.document.paper.live_width / 2
-    title_text = Text((half_paper_width, Unit(25)), None, self.title, alignment_x=AlignmentX.CENTER, font=Font('Arial', Unit(25)))
-    subtitle_text = Text((ZERO, Unit(15)), title_text, self.subtitle, alignment_x=AlignmentX.CENTER, font=Font('Arial', Unit(10)))
-    composer_text = Text((half_paper_width, ZERO), subtitle_text, self.composer, alignment_x=AlignmentX.RIGHT, font=Font('Arial', Unit(10)))
+    title_text = self.title.draw((half_paper_width, self.title.font_size), None, AlignmentX.CENTER)
+    # title_text = Text((half_paper_width, Unit(25)), None, self.title, alignment_x=AlignmentX.CENTER, font=Font('Arial', Unit(25)))
+    subtitle_text = self.subtitle.draw((ZERO, Unit(5) + self.subtitle.font_size), title_text, AlignmentX.CENTER)
+    # subtitle_text = Text((ZERO, Unit(15)), title_text, self.subtitle, alignment_x=AlignmentX.CENTER, font=Font('Arial', Unit(10)))
+    composer_text = self.composer.draw((half_paper_width, ZERO), subtitle_text, AlignmentX.RIGHT)
+    # composer_text = Text((half_paper_width, ZERO), subtitle_text, self.composer, alignment_x=AlignmentX.RIGHT, font=Font('Arial', Unit(10)))
 
     return composer_text.canvas_pos().y
 

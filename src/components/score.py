@@ -3,6 +3,7 @@ from neoscore.western.duration import Duration
 from neoscore.common import *
 from components.measure import Measure, TimeSignature
 from components.note import Note, EmptyNote, Tuplet
+from components.text import DocumentText
 from components.util import note_height, note_width, parse_escaped_string, parse_duration, set_custom_note_scale
 
 
@@ -201,18 +202,18 @@ class ScoreLayout:
 
   
 class Score:
-  def __init__(self, header='', layout=[], voices=[], display=None):
+  def __init__(self, header=DocumentText(), layout=[], voices=[], display=None):
     self.header = header
     self.layout = layout
     self.voices = voices
     self.display = display
     
   def from_tree(tree):
-    score = Score('', [], [], None)
+    score = Score(DocumentText('', 'Arial', Unit(10), 80, False), [], [], None)
     for child in tree.children:
       for option in child.children:
         if option.data.value == 'score_header':
-          score.header = parse_escaped_string(option.children[0].value)
+          score.header = DocumentText.from_tree(option, 'Arial', Unit(10), 80, False)
         elif option.data.value == 'score_layout':
           score.layout = ScoreLayout.from_tree(option)
         elif option.data.value == 'score_voice':
@@ -223,5 +224,5 @@ class Score:
   
   def draw(self, y_pos):
     set_custom_note_scale(self.layout.notation_scale, self.layout.note_spacing)
-    header_text = Text(Point(ZERO, y_pos + Unit(25)), None, self.header, font=Font('Arial', Unit(10), weight=80))
+    header_text = self.header.draw(Point(ZERO, y_pos + Unit(25) + self.header.font_size), None)
     return self.display.draw(Unit(25), header_text)

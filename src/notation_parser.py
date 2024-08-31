@@ -34,10 +34,11 @@ notation_parser = Lark(r"""
     subtitle : "\\subtitle" ESCAPED_STRING ("{" text_formatting? "}")?
     composer : "\\composer" ESCAPED_STRING ("{" text_formatting? "}")?
     
-    text_formatting : font? fontsize?
-                    | fontsize font
+    text_formatting : (font | font_size | font_weight | font_italic)*
     font : "\\font" ESCAPED_STRING
-    fontsize : "\\fontSize" FLOAT
+    font_size : "\\fontSize" FLOAT
+    font_weight : "\\fontWeight" INTEGER
+    font_italic : "\\italic"
                     
     score : "\\score" "{" score_value* "}"
     score_value : score_header

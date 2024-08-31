@@ -30,13 +30,25 @@ optional arguments:
 
 #### Metadata
 
-The metadata section of the document is used to define high-level information, such as the composer, title, and papersize.
+The metadata section of the document is used to define high-level information, such as the composer, title, and paper properties.
 
 ```
 \meta {
-  \papersize letter
+  \paper {
+    \size letter
+    \margin 0.5in             # margin to use on all sides
+    \marginLeft 0.25in        # overrides default margin on a per-side basis
+    \marginRight 0.25in
+    \marginTop 0.75in
+    \marginBottom 0.75in
+  }
   \title "My First Score"
-  \subtitle "with western notation"
+  \subtitle "with western notation" {       # all text objects can optionally specify the following properties
+    \font "Calibri"                         # font family (defaults to "Arial")
+    \fontSize 16                            # font size (default depends on text object)
+    \fontWeight 50                          # font weight (defaults to 50, should be in range 0-100)
+    \italic                                 # if added, italicizes text (defaults to False)
+  }
   \composer "J.S Bach"
 }
 ```
@@ -65,10 +77,11 @@ If a staff isn't associated with a voice, it _will not_ appear in the rendered s
 
 ```
 \layout {
-  \staff "Player 1" {
-    \includeWesternNotation     # render western notation below traditional notation
-  }
-  \staff "Player 2" {}
+  \staff "Player 1"           # Note, only 1 staff is supported per score at this time
+  \notationScale 1.2          # scales up/down all notes, articulations, etc. based on the provided factor
+  \noteSpacing 2.0            # scales up/down the horizontal spacing between each note based on the provided factor
+  \staffSpacing 1.8           # scales up/down the vertical spacing between staffs based on the provided factor
+  \extendLastLine             # if added, the final line in the score will take the full width of the document
 }
 ```
 

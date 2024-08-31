@@ -6,14 +6,18 @@
 	}
 	\title "Asalato Notation Examples" {
 		\font "Calibri"
-		\fontSize 32
+		\fontSize 45
 	}
 	\subtitle "with Western musical notation"
 	\composer "J.S. Bach"
 }
 
 \score {
-	\header "Flip-Flop -> Triplet Den-Den"
+	\header "Flip-Flop -> Triplet Den-Den" {
+		\font "Calibri"
+		\fontSize 30
+		\italic
+	}
 	\layout {
 		\staff "Player #1"
 		\extendLastLine
