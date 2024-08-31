@@ -12,12 +12,23 @@ default_note_height = 104
 # used to scale up/down default image sizes for the final document/pdf
 default_note_scale = 0.37
 
+# Used to dynamically scale each scores notations
+custom_note_scale = 1.0
+custom_note_spacing = 1.0
+
+
 # Image Utilities
+def set_custom_note_scale(note_scale, note_spacing):
+  global custom_note_scale
+  global custom_note_spacing
+  custom_note_scale = note_scale
+  custom_note_spacing = note_spacing
+
 def get_note_scale(multiplier=1):
-  return default_note_scale * multiplier
+  return default_note_scale * multiplier * custom_note_scale
 
 def note_width(multiplier=1):
-  return Unit(default_note_width * get_note_scale(multiplier))
+  return Unit(default_note_width * get_note_scale(multiplier) * custom_note_spacing)
 
 def note_height(multiplier=1):
   return Unit(default_note_height * get_note_scale(multiplier))

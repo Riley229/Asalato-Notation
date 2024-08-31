@@ -3,21 +3,22 @@ from neoscore.western.duration import Duration
 from neoscore.common import *
 from components.measure import Measure, TimeSignature
 from components.note import Note, EmptyNote, Tuplet
-from components.util import note_height, note_width, parse_escaped_string, parse_duration
+from components.util import note_height, note_width, parse_escaped_string, parse_duration, set_custom_note_scale
 
 
 class ScoreDisplay:
   def __init__(self, voices, layout):    
-    if len(layout) == 0:
+    if len(layout.staffs) == 0:
       return
     voice = None
     for next_voice in voices:                     # temporary, only supports 1 voice
-      if next_voice.name == layout[0].name:
+      if next_voice.name == layout.staffs[0].name:
         voice = next_voice
         break
       
+    self.layout = layout
     self.measures = []
-    self.staff = layout[0]
+    self.staff = layout.staffs[0]
       
     time_pattern = [x for _, x in sorted(zip(voice.time_pattern_indices, voice.time_pattern))]
     time_pattern_indices = sorted(voice.time_pattern_indices)
@@ -68,35 +69,41 @@ class ScoreDisplay:
       else:
         lines.append(current_line)
         current_line = [measure]
-        current_line_width = ZERO
+        current_line_width = measure.get_width()
         
     # ensure the final line is added
     if len(current_line) > 0:
       lines.append(current_line)
+      
+    # calculate staff spacing
+    staff_spacing = note_height(1.5) * self.layout.staff_spacing
 
     # calculate total length of all lines and create flowable/staff group objects
     total_length = len(lines) * max_line_width
-    flowable = Flowable((ZERO, Unit(y_offset)), parent, total_length, Unit(110), break_threshold=Unit(300))
+    flowable = Flowable((ZERO, Unit(y_offset)), parent, total_length, note_height() + (staff_spacing * 1.5), break_threshold=Unit(300))
     staff_group = StaffGroup()
     
     # create staff objects
     Staff((ZERO, y_offset), flowable, total_length, staff_group, line_count=0) # additional staff is used to "lead" barlines
     right_staff = Staff((ZERO, y_offset + note_width(0.5)), flowable, total_length, staff_group, line_count=0)
     InstrumentName((right_staff.unit(-2), right_staff.center_y), right_staff, 'R', 'R', font=Font('Arial', Unit(10), weight=50))
-    left_staff = Staff((ZERO, y_offset + note_height(1.5)), flowable, total_length, staff_group, line_count=0)
+    left_staff = Staff((ZERO, y_offset + note_height(0.5) + staff_spacing), flowable, total_length, staff_group, line_count=0)
     InstrumentName((left_staff.unit(-2), left_staff.center_y), left_staff, 'L', 'L', font=Font('Arial', Unit(10), weight=50))
-    Staff((ZERO, y_offset + note_height(2.0)), flowable, total_length, staff_group, line_count=0) # additional staff is used to "ground" barlines
+    Staff((ZERO, y_offset + note_height() + staff_spacing), flowable, total_length, staff_group, line_count=0) # additional staff is used to "ground" barlines
     
     # render each line, ensuring measures fill to the end, unless rendering the final line
     x_offset = ZERO
     time_signature = None
     note_duration = None
-    for line in lines:
+    for i, line in enumerate(lines):
       # calculate additional width to "inject" into each measure
       line_width = ZERO
       for measure in line:
         line_width += measure.get_width()
-      added_width = (max_line_width - line_width) / len(line)
+        
+      added_width = ZERO
+      if i != (len(lines) - 1) or self.layout.extend_last_line:
+        added_width = (max_line_width - line_width) / len(line)
       
       # render each measure in the line
       for measure in line:
@@ -166,6 +173,31 @@ class ScoreStaff:
         staff.name = parse_escaped_string(child.value)
     
     return staff
+  
+  
+class ScoreLayout:
+  def __init__(self, staffs=[], notation_scale=1.0, staff_spacing=1.0, note_spacing=1.0, extend_last_line=False):
+    self.staffs = staffs
+    self.notation_scale = notation_scale
+    self.staff_spacing = staff_spacing
+    self.note_spacing = note_spacing
+    self.extend_last_line = extend_last_line
+    
+  def from_tree(tree):
+    layout = ScoreLayout([], 1.0, 1.0, 1.0, False)
+    for option in tree.children:
+      if option.data.value == 'staff':
+        layout.staffs.append(ScoreStaff.from_tree(option))
+      elif option.data.value == 'notation_scale':
+        layout.notation_scale = float(option.children[0].value)
+      elif option.data.value == 'staff_spacing':
+        layout.staff_spacing = float(option.children[0].value)
+      elif option.data.value == 'note_spacing':
+        layout.note_spacing = float(option.children[0].value)
+      elif option.data.value == 'extend_last_line':
+        layout.extend_last_line = True
+      
+    return layout
 
   
 class Score:
@@ -182,8 +214,7 @@ class Score:
         if option.data.value == 'score_header':
           score.header = parse_escaped_string(option.children[0].value)
         elif option.data.value == 'score_layout':
-          for staff_tree in option.children:
-            score.layout.append(ScoreStaff.from_tree(staff_tree))
+          score.layout = ScoreLayout.from_tree(option)
         elif option.data.value == 'score_voice':
           score.voices.append(Voice.from_tree(option))
           
@@ -191,5 +222,6 @@ class Score:
     return score
   
   def draw(self, y_pos):
+    set_custom_note_scale(self.layout.notation_scale, self.layout.note_spacing)
     header_text = Text(Point(ZERO, y_pos + Unit(25)), None, self.header, font=Font('Arial', Unit(10), weight=80))
     return self.display.draw(Unit(25), header_text)

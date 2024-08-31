@@ -48,11 +48,12 @@ notation_parser = Lark(r"""
     score_notation_scale : "\\notationScale" FLOAT
     score_staff_spacing : "\\staffSpacing" FLOAT
     
-    score_layout : "\\layout" "{" (staff | extend_last_line | notation_scale | staff_spacing)* "}"
+    score_layout : "\\layout" "{" (staff | extend_last_line | notation_scale | staff_spacing | note_spacing)* "}"
     staff : "\\staff" ESCAPED_STRING
     extend_last_line : "\\extendLastLine"
     notation_scale : "\\notationScale" FLOAT
     staff_spacing : "\\staffSpacing" FLOAT
+    note_spacing : "\\noteSpacing" FLOAT
     
     score_voice : "\\voice" ESCAPED_STRING "{" voice_hand* "}"
     voice_hand : left_hand

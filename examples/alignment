@@ -17,8 +17,9 @@
 	\layout {
 		\staff "Player #1"
 		\extendLastLine
-		\notationScale 1.2
-		\staffSpacing 2.5
+		#\notationScale 1.2
+		\noteSpacing 2
+		#\staffSpacing 2
 	}
 
 		\voice "Player #1" {
