@@ -81,6 +81,12 @@ class ScoreDisplay:
 
     # calculate total length of all lines and create flowable/staff group objects
     total_length = len(lines) * max_line_width
+    if not self.layout.extend_last_line:
+      last_line_width = ZERO
+      for measure in lines[len(lines) - 1]:
+        last_line_width += measure.get_width()
+      total_length -= (max_line_width - last_line_width)
+    
     flowable = Flowable((ZERO, Unit(y_offset)), parent, total_length, note_height() + (staff_spacing * 1.5), break_threshold=Unit(300))
     staff_group = StaffGroup()
     

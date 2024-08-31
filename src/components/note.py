@@ -44,7 +44,7 @@ class Note:
     
     for parameter in self.parameters:
       # for now, the only parameter is text to display above note. May need to modify in future
-      Text((pos_x + (width / 2), -note_height(0.5) - Unit(2)), staff, parameter, alignment_x=AlignmentX.CENTER, font=Font('Arial', Unit(7)))
+      Text((pos_x + (width / 2), -note_height(0.5) - Unit(2)), staff, parameter, alignment_x=AlignmentX.CENTER, font=Font('Arial', Unit(19) * get_note_scale()))
     
     for modifier in self.modifiers:
       # handle modifier glyphs (articulations, dynamics)
@@ -54,7 +54,7 @@ class Note:
         glyph_pos_x = pos_x + get_x_offset('modifier', modifier, self.right_hand) + offset_x
         glyph_pos_y = get_y_offset('modifier', modifier, self.right_hand)
         glyph_alignment = get_y_alignment('modifier', modifier, self.right_hand)
-        glyph = MusicText((glyph_pos_x, glyph_pos_y), staff, glyph_id, font=MusicFont('Bravura', Unit(4)), alignment_x=AlignmentX.CENTER)
+        glyph = MusicText((glyph_pos_x, glyph_pos_y), staff, glyph_id, font=MusicFont('Bravura', Unit(10.8) * get_note_scale()), alignment_x=AlignmentX.CENTER)
         if glyph_alignment == 'bottom':
           glyph.y += glyph.music_chars[0].bounding_rect.height
       # handle modifier images (knocks) -> all images "hug" notes for now
